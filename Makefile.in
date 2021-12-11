@@ -1,0 +1,32 @@
+CC=@CC@
+CFLAGS=@CFLAGS@
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+prefix = @prefix@
+datarootdir = @datarootdir@
+exec_prefix = @exec_prefix@
+bindir = @bindir@
+mandir = @mandir@
+INSTALL = @INSTALL@
+
+OBJS = hk.o
+
+hk: ${OBJS}
+	cc ${LDFLAGS} -lX11 -o hk ${OBJS}
+
+clean:
+	rm -f hk ${OBJS}
+
+install: hk
+	install -d ${DESTDIR}${bindir}
+	install -c -m 555 hk ${DESTDIR}${bindir}
+
+distclean: clean
+	rm -rf configure Makefile autom4te.cache config.log config.status
+
+distrib:
+	${MAKE} distclean
+	autoconf
+	@read v?'hk version: '; mkdir hk-$$v; \
+	    cp `ls | grep -E -v "(autom4te.cache)|(hk-$$v)"` hk-$$v; \
+	    tar cfz hk-$$v.tar.gz hk-$$v; rm -rf hk-$$v
