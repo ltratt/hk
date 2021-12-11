@@ -5,10 +5,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+
+// How many nanoseconds to wait when polling to see if all keys are released.
+#define WAIT_RELEASE 10000000
 
 // The X11 modifiers which we want to ignore when listening for a hotkey. Put
 // another way, we don't care whether these modifiers are set or unset when
@@ -141,18 +145,22 @@ void parse(Display *dpy, char *s, unsigned int *modifier_mask, KeyCode *keycode)
 
 static void usage(int rtn_code)
 {
-    fprintf(stderr, "Usage: %s [-h] <hotkey> <cmd> [<cmdarg1> ... <cmdargn>]\n", __progname);
+    fprintf(stderr, "Usage: %s [-hw] <hotkey> <cmd> [<cmdarg1> ... <cmdargn>]\n", __progname);
     exit(rtn_code);
 }
 
 int main(int argc, char** argv) {
+    bool wait = false;
     while (true) {
-        int ch = getopt(argc, argv, "h");
+        int ch = getopt(argc, argv, "hw");
         if (ch == -1)
             break;
         switch (ch) {
         case 'h':
             usage(0);
+        case 'w':
+            wait = true;
+            break;
         default:
             usage(1);
         }
@@ -183,6 +191,26 @@ int main(int argc, char** argv) {
         // FIXME: Do we need to check that we get the KeyPress event we expected?
         if (ev.type == KeyPress)
             break;
+    }
+
+    if (wait) {
+        while (true) {
+            char kr[32];
+            XQueryKeymap(dpy, kr);
+            bool pressed = false;
+            for (int i = 0; i < 32; i++) {
+                if (kr[i] != 0) {
+                    pressed = true;
+                    break;
+                }
+            }
+            if (!pressed)
+                break;
+            struct timespec tm;
+            tm.tv_sec = 0;
+            tm.tv_nsec = WAIT_RELEASE;
+            nanosleep(&tm, NULL);
+        }
     }
     XCloseDisplay(dpy);
     if (execvp(argv[1], argv + 1) != 0) {

@@ -20,7 +20,18 @@ will execute the command `notify-send "Hello`" when `Ctrl+Shift+F6` is pressed.
 `hk` passes through stdin unchanged so you can pipe input to commands e.g.:
 
 ```sh
-uname | hk Ctrl+F8 sh -c "sleep 0.5 && xdotool type --file -"
+uname | hk Ctrl+F8 xargs notify-send
+```
+
+By default, `hk` executes the command as soon as the hotkey sequence is
+pressed. The `-w` option makes `hk` wait until all keys (not just the hotkeys)
+have been released. This can be useful if the action of the command can be
+effected by key presses. For example if you use `xdotool type` to enter text on
+a hotkey, then having the `Ctrl` key held down can have surprising effects
+which `-w` can alleviate:
+
+```sh
+uname | hk -w Ctrl+F8 xdotool type --file -
 ```
 
 Pressing `Ctrl+F8` will then "type" text into the current X11 window (notice
