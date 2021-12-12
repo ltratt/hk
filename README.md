@@ -2,10 +2,10 @@
 
 ## Overview
 
-`hk` allows you to set one-off hotkeys at the command-line. Its usage is:
+`hk` allows temporary X11 hotkeys to be set. Its usage is:
 
 ```sh
-hk [-hw] <hotkey> <cmd> [<cmdarg1> ... <cmdargn>]
+hk [-w] <hotkey> <command> [<argument> ...]
 ```
 
 where `<hotkey>` is of the form `[Modifier1[+Modifier2[+...]]+]<Key>`. For example:
@@ -40,5 +40,5 @@ uname | hk -w Ctrl+F8 xdotool type --file -
 ```sh
 $ autoconf
 $ ./configure
-$ make
+$ make install
 ```

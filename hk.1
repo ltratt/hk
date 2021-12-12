@@ -8,11 +8,10 @@
 .Nm hk
 .Op Fl w
 .Ar hotkey
-.Ar cmd
-.Op Ar args ...
+.Ar command Op Ar argument ...
 .Sh DESCRIPTION
 .Nm
-allows one to set one-off hotkeys at the command-line. For example:
+allows temporary X11 hotkeys to be set. For example:
 .Bd -literal -offset 4n
 hk Ctrl+Shift+F6 notify-send Hello
 .Ed
@@ -33,10 +32,10 @@ causes
 to wait until
 .Em all
 keys (not just the hotkey) are released before executing
-.Em cmd .
+.Em command .
 .It hotkey
 Is the hotkey to active the execution of
-.Em cmd .
+.Em command .
 Hotkeys take the form:
 .Bd -literal -offset 4n
 [Modifier1[+Modifier2[+...]]+]<Key>
@@ -57,14 +56,13 @@ interpretation of your physical keyboard. If in doubt,
 can be used to find out the
 .Em XKB
 name of a physical key.
-.It cmd
-is the command to execute, using normal shell lookup.
+.It command Op Ar arguments ...
+is the program to be executed, using the outer shell's normal lookup mechanism
+to locate
+.Em command .
 .Nm
 passes stdin, stdout, and stderr unchanged to
-.Em cmd .
-.It args
-are passed to
-.Em cmd .
+.Em command .
 .El
 .Sh CAVEATS
 .Nm
