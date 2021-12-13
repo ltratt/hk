@@ -20,6 +20,8 @@ clean:
 install: hk
 	install -d ${DESTDIR}${bindir}
 	install -c -m 555 hk ${DESTDIR}${bindir}
+	install -d ${DESTDIR}${mandir}/man1
+	install -c -m 444 hk.1 ${DESTDIR}${mandir}/man1/hk.1
 
 distclean: clean
 	rm -rf configure Makefile autom4te.cache config.log config.status
