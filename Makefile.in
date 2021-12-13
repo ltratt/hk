@@ -12,7 +12,7 @@ INSTALL = @INSTALL@
 OBJS = hk.o
 
 hk: ${OBJS}
-	${CC} ${LDFLAGS} -lX11 -lXtst -o hk ${OBJS}
+	${CC} ${LDFLAGS} -lX11 -o hk ${OBJS}
 
 clean:
 	rm -f hk ${OBJS}
