@@ -158,6 +158,7 @@ int main(int argc, char** argv) {
         switch (ch) {
         case 'h':
             usage(0);
+            break;
         case 'w':
             wait = true;
             break;
