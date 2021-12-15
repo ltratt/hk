@@ -1,4 +1,4 @@
-.Dd 2021-12-12
+.Dd $Mdocdate: December 12 2021 $
 .Dt HK 1
 .Os
 .Sh NAME
@@ -11,7 +11,8 @@
 .Ar command Op Ar argument ...
 .Sh DESCRIPTION
 .Nm
-allows temporary X11 hotkeys to be set. For example:
+allows temporary X11 hotkeys to be set.
+For example:
 .Bd -literal -offset 4n
 hk Ctrl+Shift+F6 notify-send Hello
 .Ed
@@ -45,13 +46,15 @@ The particular modifiers available depend on XKB's interpretation of your
 physical keyboard, but typically include
 .Em Ctrl
 /
-.Em Control,
-.Em Shift,
-and so on. Modifiers are case insensitive.
+.Em Control ,
+.Em Shift ,
+and so on.
+Modifiers are case insensitive.
 .Em key
 is case sensitive and again depends on
 .Em XKB 's
-interpretation of your physical keyboard. If in doubt,
+interpretation of your physical keyboard.
+If in doubt,
 .Xr xev 1
 can be used to find out the
 .Em XKB
