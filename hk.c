@@ -109,7 +109,7 @@ bool parse_key(Display *dpy, char *s, size_t len, KeyCode *keycode) {
     KeySym ks = XStringToKeysym(name);
     if (ks != NoSymbol) {
         if (*keycode != NoSymbol)
-            errx(1, "Can't bind a second key '%.*s'", (int) len, s);
+            errx(EXIT_FAILURE, "Can't bind a second key '%.*s'", (int) len, s);
         *keycode = XKeysymToKeycode(dpy, ks);
         return true;
     }
@@ -139,7 +139,7 @@ void parse(Display *dpy, char *s, unsigned int *modifier_mask, KeyCode *keycode)
             i += k + 1;
             continue;
         }
-        errx(1, "Illegal modifier or key '%.*s'", (int) k, s + i);
+        errx(EXIT_FAILURE, "Illegal modifier or key '%.*s'", (int) k, s + i);
     }
 }
 
@@ -157,13 +157,13 @@ int main(int argc, char** argv) {
             break;
         switch (ch) {
         case 'h':
-            usage(0);
+            usage(EXIT_SUCCESS);
             break;
         case 'w':
             wait = true;
             break;
         default:
-            usage(1);
+            usage(EXIT_FAILURE);
         }
     }
     argc -= optind;
@@ -215,8 +215,8 @@ int main(int argc, char** argv) {
     }
     XCloseDisplay(dpy);
     if (execvp(argv[1], argv + 1) != 0) {
-        err(1, "Couldn't run command");
+        err(EXIT_FAILURE, "Couldn't run command");
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }
