@@ -11,6 +11,8 @@ INSTALL = @INSTALL@
 
 OBJS = hk.o
 
+all: hk
+
 hk: ${OBJS}
 	${CC} ${LDFLAGS} -lX11 -o hk ${OBJS}
 
