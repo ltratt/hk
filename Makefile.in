@@ -33,4 +33,4 @@ distrib:
 	autoconf
 	@read v?'hk version: '; mkdir hk-$$v; \
 	    cp `ls | grep -E -v "(autom4te.cache)|(hk-$$v)"` hk-$$v; \
-	    tar cfz hk-$$v.tar.gz hk-$$v; rm -rf hk-$$v
+	    tar cfz hk-$$v.tgz hk-$$v; rm -rf hk-$$v
