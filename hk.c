@@ -14,6 +14,11 @@
 // How many nanoseconds to wait when polling to see if all keys are released.
 #define WAIT_RELEASE 10000000
 
+// A KeyCode representing no "real" KeyCode. The X11 spec defines the valid
+// `KeyCode` values to be 8..255 (both ends inclusive), but GrabKey uses `0` as
+// `AnyKey`, so we use `1` as a safe bet.
+#define NO_KEYCODE 1
+
 // The X11 modifiers which we want to ignore when listening for a hotkey. Put
 // another way, we don't care whether these modifiers are set or unset when
 // listening for a hotkey.
@@ -101,14 +106,15 @@ bool parse_modifier(Display *dpy, char *s, size_t len, unsigned int *modifier_ma
 }
 
 // If the string `s`, of `len` bytes, is a valid keycode, update `keycode` and
-// return `true`; else return `false`.
+// return `true`; else return `false`. If no keycode has been set, `*keycode`
+// must be equal to `NO_KEYCODE`.
 bool parse_key(Display *dpy, char *s, size_t len, KeyCode *keycode) {
     char name[len + 1];
     strncpy(name, s, len);
     name[len] = 0;
     KeySym ks = XStringToKeysym(name);
     if (ks != NoSymbol) {
-        if (*keycode != NoSymbol)
+        if (*keycode != NO_KEYCODE)
             errx(EXIT_FAILURE, "Can't bind a second key '%.*s'", (int) len, s);
         *keycode = XKeysymToKeycode(dpy, ks);
         return true;
@@ -120,7 +126,7 @@ bool parse_key(Display *dpy, char *s, size_t len, KeyCode *keycode) {
 void parse(Display *dpy, char *s, unsigned int *modifier_mask, KeyCode *keycode) {
     size_t i = 0;
     *modifier_mask = 0;
-    *keycode = NoSymbol;
+    *keycode = NO_KEYCODE;
     while (i < strlen(s)) {
         char *j = strchr(s + i, '+');
         size_t k;
