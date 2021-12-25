@@ -214,9 +214,6 @@ int main(int argc, char** argv) {
         }
     }
     XCloseDisplay(dpy);
-    if (execvp(argv[1], argv + 1) != 0) {
-        err(EXIT_FAILURE, "Couldn't run command");
-    }
-
-    return EXIT_SUCCESS;
+    execvp(argv[1], argv + 1);
+    err(EXIT_FAILURE, "Couldn't run command");
 }
