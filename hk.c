@@ -149,8 +149,7 @@ void parse(Display *dpy, char *s, unsigned int *modifier_mask, KeyCode *keycode)
     }
 }
 
-static void usage(int rtn_code)
-{
+static void usage(int rtn_code) {
     fprintf(stderr, "Usage: %s [-hw] <hotkey> <cmd> [<cmdarg1> ... <cmdargn>]\n", __progname);
     exit(rtn_code);
 }
