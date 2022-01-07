@@ -55,7 +55,7 @@ unsigned int ignorable_modifiers(Display *dpy) {
     return mask;
 }
 
-// Is the string `s` of `end` bytes case-insensitive-equal to the string `cmp`?
+// Is the string `s` of `len` bytes case-insensitive-equal to the string `cmp`?
 bool streq(char *s, size_t len, char *cmp) {
     if (len != strlen(cmp))
         return false;
