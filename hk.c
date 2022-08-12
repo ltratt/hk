@@ -85,10 +85,10 @@ bool parse_modifier(Display *dpy, char *s, size_t len, unsigned int *modifier_ma
         map_name = "Meta_L";
     } else if (streq(s, len, "super")) {
         map_name = "Super_L";
+    } else {
+        return false;
     }
 
-    if (map_name == NULL)
-        return false;
     KeySym ks = XStringToKeysym(map_name);
     if (ks == NoSymbol)
         return false;
