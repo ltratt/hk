@@ -180,6 +180,8 @@ int main(int argc, char** argv) {
         usage(1);
 
     Display* dpy = XOpenDisplay(NULL);
+    if (dpy == NULL)
+        errx(EXIT_FAILURE, "Cannot open display");
     Window root = DefaultRootWindow(dpy);
 
     unsigned int ignore_mask = ignorable_modifiers(dpy);
