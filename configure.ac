@@ -8,7 +8,7 @@ AC_PROG_GCC_TRADITIONAL
 AC_GNU_SOURCE
 
 CFLAGS="$CFLAGS -std=c99 -Wall -pedantic -Wextra"
-LDFLAGS="-Wl,-z,relro,-z,now"
+LDFLAGS="$LDFLAGS -Wl,-z,relro,-z,now"
 
 case `uname -s` in
   Linux*|GNU* )
