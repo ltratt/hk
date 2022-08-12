@@ -97,6 +97,8 @@ bool parse_modifier(Display *dpy, char *s, size_t len, unsigned int *modifier_ma
     bool found = false;
     for (int i = 0; i < 8 * mm->max_keypermod; i++) {
         if (mm->modifiermap[i] == kc) {
+            if ((*modifier_mask & MODIFIER_MASKS[i / mm->max_keypermod]) != 0)
+                errx(EXIT_FAILURE, "Repeated modifier '%.*s'", (int) len, s);
             *modifier_mask |= MODIFIER_MASKS[i / mm->max_keypermod];
             found = true;
             break;
