@@ -67,14 +67,6 @@ to locate
 passes stdin, stdout, and stderr unchanged to
 .Em command .
 .El
-.Sh CAVEATS
-.Nm
-ignores the Caps Lock and Num Lock modifiers when determining if
-.Em hotkey
-has been pressed, but other keyboard modifiers (which you may or may not be
-aware of!) can prevent
-.Em hotkey
-being triggered.
 .Sh SEE ALSO
 .Xr xev 1
 .Pp
@@ -84,3 +76,11 @@ being triggered.
 .Nm
 was written by
 .An Laurence Tratt Aq https://tratt.net/laurie/
+.Sh CAVEATS
+.Nm
+ignores the Caps Lock and Num Lock modifiers when determining if
+.Em hotkey
+has been pressed, but other keyboard modifiers (which you may or may not be
+aware of!) can prevent
+.Em hotkey
+being triggered.
