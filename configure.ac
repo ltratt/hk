@@ -1,4 +1,4 @@
-AC_INIT([hk], [0.1])
+AC_INIT([hk], [0.2])
 
 AC_LANG(C)
 
