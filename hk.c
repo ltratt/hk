@@ -118,7 +118,7 @@ bool parse_key(Display *dpy, char *s, size_t len, KeyCode *keycode) {
     KeySym ks = XStringToKeysym(name);
     if (ks != NoSymbol) {
         if (*keycode != NO_KEYCODE)
-            errx(EXIT_FAILURE, "Can't bind a second key '%.*s'", (int) len, s);
+            errx(EXIT_FAILURE, "Repeated key '%.*s'", (int) len, s);
         *keycode = XKeysymToKeycode(dpy, ks);
         return true;
     }
