@@ -8,6 +8,7 @@
 #include <time.h>
 #include <unistd.h>
 
+#include <X11/XKBlib.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
@@ -21,8 +22,10 @@
 
 // The X11 modifiers which we want to ignore when listening for a hotkey. Put
 // another way, we don't care whether these modifiers are set or unset when
-// listening for a hotkey.
-static const KeySym IGNORABLE_MODIFIER_KEYSYMS[] = {XK_Caps_Lock, XK_Num_Lock, XK_Scroll_Lock};
+// listening for a hotkey; we also don't care if these are set when waiting
+// for "all" keys to be released with `-w`.
+static const KeySym IGNORABLE_MODIFIER_KEYSYMS[] = {
+    XK_Caps_Lock, XK_Num_Lock, XK_Scroll_Lock, XK_Mode_switch};
 
 // Map the output from XGetModifierMapping to `XGrabKey` modifier masks. It's
 // unclear whether we're actually required to do this or not (on my machine,
@@ -210,9 +213,16 @@ int main(int argc, char** argv) {
             XQueryKeymap(dpy, kr);
             bool pressed = false;
             for (int i = 0; i < 32; i++) {
-                if (kr[i] != 0) {
-                    pressed = true;
-                    break;
+                for (int j = 0; j < 8; j++) {
+                    if (kr[i] & (1 << j)) {
+                        bool ignorable = false;
+                        for (size_t k = 0; k < sizeof(IGNORABLE_MODIFIER_KEYSYMS) / sizeof(KeySym); k++) {
+                            if (XkbKeycodeToKeysym(dpy, i * 8 + j, 0, 0) == IGNORABLE_MODIFIER_KEYSYMS[k])
+                                ignorable = true;
+                        }
+                        if (!ignorable)
+                            pressed = true;
+                    }
                 }
             }
             if (!pressed)

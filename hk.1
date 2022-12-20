@@ -78,9 +78,12 @@ was written by
 .An Laurence Tratt Aq https://tratt.net/laurie/
 .Sh CAVEATS
 .Nm
-ignores the Caps Lock and Num Lock modifiers when determining if
+ignores the Caps Lock, Mode Switch, Num Lock, and Scroll Lock modifiers when:
+determining if
 .Em hotkey
-has been pressed, but other keyboard modifiers (which you may or may not be
-aware of!) can prevent
+has been pressed; and determining whether any keys remain pressed for
+.Fl w .
+However, other keyboard modifiers (which you may or may not be aware of!) can
+prevent
 .Em hotkey
 being triggered.
