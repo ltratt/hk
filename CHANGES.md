@@ -1,3 +1,14 @@
+# 0.3.0 (2023-01-03)
+
+* Ignore the Mode Switch key (similarly to Caps Lock et al.).
+
+* Ignored modifiers are now also ignored by`-w`. On some setups, some modifiers
+  are permanently set as "pressed" (in some cases, without the user being aware
+  of it), meaning that they cause `-w` to permanently block unless they are
+  ignored.
+
+
+
 # 0.2.0 (2022-08-20)
 
 * Various minor bug fixes, mostly around explicitly reporting error conditions
