@@ -3,9 +3,9 @@ AC_INIT([hk], [0.2])
 AC_LANG(C)
 
 AC_PROG_CC
-AC_ISC_POSIX
+AC_USE_SYSTEM_EXTENSIONS
+AC_SEARCH_LIBS([strerror], [cposix])
 AC_PROG_GCC_TRADITIONAL
-AC_GNU_SOURCE
 
 CFLAGS="$CFLAGS -std=c99 -Wall -pedantic -Wextra"
 LDFLAGS="$LDFLAGS -Wl,-z,relro,-z,now"
