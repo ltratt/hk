@@ -222,7 +222,8 @@ int main(int argc, char** argv) {
     }
 
     if (wait) {
-        struct timespec verbose_last = { 0, 0 };
+        struct timespec verbose_last;
+        clock_gettime(CLOCK_MONOTONIC, &verbose_last);
         while (true) {
             char kr[32];
             XQueryKeymap(dpy, kr);
@@ -231,7 +232,7 @@ int main(int argc, char** argv) {
             if (verbose) {
                 struct timespec now;
                 clock_gettime(CLOCK_MONOTONIC, &now);
-                if (verbose_last.tv_nsec == 0 || timespec_delta(&now, &verbose_last) > VERBOSE_INTERVAL) {
+                if (timespec_delta(&now, &verbose_last) > VERBOSE_INTERVAL) {
                     verbose_last = now;
                     verbose_show = 1;
                 }
