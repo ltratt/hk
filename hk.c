@@ -2,6 +2,7 @@
 #include <ctype.h>
 #include <err.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,6 +15,10 @@
 
 // How many nanoseconds to wait when polling to see if all keys are released.
 #define WAIT_RELEASE 10000000
+
+// How many seconds (as a double) between printing out which keys are pressed
+// in verbose mode.
+#define VERBOSE_INTERVAL 1.0
 
 // A KeyCode representing no "real" KeyCode. The X11 spec defines the valid
 // `KeyCode` values to be 8..255 (both ends inclusive), but GrabKey uses `0` as
@@ -155,20 +160,29 @@ void parse(Display *dpy, char *s, unsigned int *modifier_mask, KeyCode *keycode)
     }
 }
 
+// Return `(time1 - time0)` in seconds as a double. Note that it is undefined
+// behaviour for `time0 < time1`.
+double timespec_delta(const struct timespec *time1, const struct timespec *time0) {
+    return (time1->tv_sec - time0->tv_sec) + (time1->tv_nsec - time0->tv_nsec) / 1e9;
+}
+
 static void usage(int rtn_code) {
     fprintf(stderr, "Usage: %s [-hw] <hotkey> <cmd> [<cmdarg1> ... <cmdargn>]\n", __progname);
     exit(rtn_code);
 }
 
 int main(int argc, char** argv) {
-    bool wait = false;
+    bool verbose = false, wait = false;
     while (true) {
-        int ch = getopt(argc, argv, "hw");
+        int ch = getopt(argc, argv, "hvw");
         if (ch == -1)
             break;
         switch (ch) {
         case 'h':
             usage(EXIT_SUCCESS);
+            break;
+        case 'v':
+            verbose = true;
             break;
         case 'w':
             wait = true;
@@ -208,25 +222,51 @@ int main(int argc, char** argv) {
     }
 
     if (wait) {
+        struct timespec verbose_last = { 0, 0 };
         while (true) {
             char kr[32];
             XQueryKeymap(dpy, kr);
             bool pressed = false;
+            uint64_t verbose_show = 0;
+            if (verbose) {
+                struct timespec now;
+                clock_gettime(CLOCK_MONOTONIC, &now);
+                if (verbose_last.tv_nsec == 0 || timespec_delta(&now, &verbose_last) > VERBOSE_INTERVAL) {
+                    verbose_last = now;
+                    verbose_show = 1;
+                }
+            }
             for (int i = 0; i < 32; i++) {
                 for (int j = 0; j < 8; j++) {
                     if (kr[i] & (1 << j)) {
                         bool ignorable = false;
+                        KeySym ks = XkbKeycodeToKeysym(dpy, i * 8 + j, 0, 0);
                         for (size_t k = 0; k < sizeof(IGNORABLE_MODIFIER_KEYSYMS) / sizeof(KeySym); k++) {
-                            if (XkbKeycodeToKeysym(dpy, i * 8 + j, 0, 0) == IGNORABLE_MODIFIER_KEYSYMS[k])
+                            if (ks == IGNORABLE_MODIFIER_KEYSYMS[k]) {
                                 ignorable = true;
+                            }
                         }
-                        if (!ignorable)
+                        if (!ignorable) {
+                            if (verbose_show > 0) {
+                                if (verbose_show == 1) {
+                                    printf("Key(s) pressed:");
+                                }
+                                char *s = XKeysymToString(ks);
+                                if (s)
+                                    printf(" %s", s);
+                                else
+                                    printf(" <unknown Keysym>");
+                                verbose_show++;
+                            }
                             pressed = true;
+                        }
                     }
                 }
             }
             if (!pressed)
                 break;
+            if (verbose_show > 1)
+                printf("\n");
             struct timespec tm;
             tm.tv_sec = 0;
             tm.tv_nsec = WAIT_RELEASE;

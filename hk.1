@@ -6,7 +6,7 @@
 .Nd Set temporary X11 hotkeys
 .Sh SYNOPSIS
 .Nm hk
-.Op Fl w
+.Op Fl v w
 .Ar hotkey
 .Ar command Op Ar argument ...
 .Sh DESCRIPTION
@@ -27,6 +27,13 @@ exits as soon as the command has executed.
 .Pp
 The options are as follows:
 .Bl -tag -width Ds
+.It Fl v
+Once the hotkey is released, prints at regular intervals to stdout which
+non-ignored keys (see the
+.Sx CAVEATS
+section) remain held.
+Only meaningful in conjunction with
+.Fl w .
 .It Fl w
 causes
 .Nm
