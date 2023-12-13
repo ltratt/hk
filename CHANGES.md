@@ -1,3 +1,9 @@
+# 0.3.1 (2023-12-13)
+
+* Add `-v` switch to print out which keys remain held after the hotkey has been
+  pressed when `-w` is specified.
+
+
 # 0.3.0 (2023-01-03)
 
 * Ignore the Mode Switch key (similarly to Caps Lock et al.).
