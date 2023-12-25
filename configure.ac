@@ -16,8 +16,8 @@ case `uname -s` in
    ;;
 esac
 
-AC_PATH_X
 AC_PATH_XTRA
+AS_IF([test "X$no_x" = "Xyes"], [AC_MSG_ERROR([Could not find X11])])
 if test -n "$X_CFLAGS"; then
     CFLAGS="$CFLAGS $X_CFLAGS"
 fi
