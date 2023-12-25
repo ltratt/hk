@@ -14,7 +14,7 @@ OBJS = hk.o
 all: hk
 
 hk: ${OBJS}
-	${CC} ${LDFLAGS} -lX11 -o hk ${OBJS}
+	${CC} ${LDFLAGS} -o hk ${OBJS} -lX11
 
 clean:
 	rm -f hk ${OBJS}
