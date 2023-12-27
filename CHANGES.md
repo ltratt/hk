@@ -1,3 +1,11 @@
+# 0.3.2 (2023-12-27)
+
+* Change linking order of `libX11` to resolve "missing symbol" problems on some
+  X11 installations.
+
+* `configure` now aborts if it cannot detect an X11 installation.
+
+
 # 0.3.1 (2023-12-13)
 
 * Add `-v` switch to print out which keys remain held after the hotkey has been
