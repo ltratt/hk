@@ -29,6 +29,7 @@ distclean: clean
 	rm -rf configure Makefile autom4te.cache config.log config.status
 
 distrib:
+	test "X`git status --porcelain`" = "X"
 	${MAKE} distclean
 	autoconf
 	@read v?'hk version: '; mkdir hk-$$v; \
