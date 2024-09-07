@@ -44,15 +44,16 @@ extern char* __progname;
 
 // Return an XGrabKey `modifiers` bitmask of all the ignorable modifiers.
 unsigned int ignorable_modifiers(Display *dpy) {
-    KeyCode ignorable_keycodes[sizeof(IGNORABLE_MODIFIER_KEYSYMS) / sizeof(KeySym)];
-    for (size_t i = 0; i < sizeof(IGNORABLE_MODIFIER_KEYSYMS) / sizeof(KeySym); i++) {
+    size_t num_ignorable = sizeof(IGNORABLE_MODIFIER_KEYSYMS) / sizeof(KeySym);
+    KeyCode ignorable_keycodes[num_ignorable];
+    for (size_t i = 0; i < num_ignorable; i++) {
         ignorable_keycodes[i] = XKeysymToKeycode(dpy, IGNORABLE_MODIFIER_KEYSYMS[i]);
     }
 
     XModifierKeymap *mm = XGetModifierMapping(dpy);
     unsigned int mask = 0;
     for (int i = 0; i < 8 * mm->max_keypermod; i++) {
-        for (size_t j = 0; j < sizeof(ignorable_keycodes) / sizeof(KeyCode); j++) {
+        for (size_t j = 0; j < num_ignorable; j++) {
             if (ignorable_keycodes[j] != NoSymbol && mm->modifiermap[i] == ignorable_keycodes[j]) {
                 mask |= MODIFIER_MASKS[i / mm->max_keypermod];
             }
