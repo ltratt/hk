@@ -1,0 +1,95 @@
+#! /bin/sh
+
+set -eu
+
+# Inevitably, in some parts of this test, all we can do is `sleep`: by sleeping
+# a second for things that, on a modern machine, will probably take less than
+# 1ms, we're probably striking a reasonable balance.
+
+err=0
+for cmd in timeout xdotool Xvfb; do
+    if ! command -v "$cmd" >/dev/null 2>&1; then
+        echo "Error: missing $cmd" > /dev/stderr
+        err=1
+    fi
+done
+if [ "$err" = 1 ]; then
+    exit 1
+fi
+
+display=""
+i=0
+while [ "$i" -lt 250 ]; do
+    if [ ! -e "/tmp/.X11-unix/X$i" ] && [ ! -e "/tmp/.X${display}-lock" ]; then
+        display="$i"
+        break
+    fi
+    i=$((i+1))
+done
+if [ -z "$display" ]; then
+    echo "Error: can't find a unique display number."
+fi
+echo "===> Using DISPLAY=:$display"
+Xvfb ":$display" &
+xvfb_pid=$!
+sleep 1
+tmpd="$(mktemp -d)"
+cleanup() {
+    rm -rf "$tmpd"
+    kill "$xvfb_pid" 2> /dev/null || true
+}
+trap cleanup EXIT
+
+export DISPLAY=":$display.0"
+
+start_hk() {
+    printf "===> %s... " "$1"
+    shift
+    rm -f "$tmpd/touched"
+    ./hk "$@" touch "$tmpd/touched" &
+    hk_pid=$!
+    sleep 1
+    test ! -f "$tmpd/touched"
+}
+
+start_hk "basic" Ctrl+F8
+xdotool key Control+F8
+wait "$hk_pid"
+test -f "$tmpd/touched"
+echo "ok"
+
+start_hk "extra modifiers suppress execution" Ctrl+F8
+xdotool key Shift+Control+F6
+sleep 1
+test ! -e "$tmpd/touched"
+xdotool key Control+F8
+wait "$hk_pid"
+test -f "$tmpd/touched"
+echo "OK"
+
+start_hk "ignore modifiers" Ctrl+F8
+xdotool key Num_Lock
+sleep 1
+test ! -f "$tmpd/touched"
+xdotool key Control+F8
+wait "$hk_pid"
+test -f "$tmpd/touched"
+echo "OK"
+
+start_hk "modifier only doesn't run command" Ctrl+Shift+F8
+test ! -e "$tmpd/touched"
+xdotool key Ctrl
+test ! -e "$tmpd/touched"
+sleep 1
+xdotool key Shift
+test ! -e "$tmpd/touched"
+sleep 1
+xdotool key Ctrl+Shift
+test ! -e "$tmpd/touched"
+sleep 1
+set +e
+kill "$hk_pid"
+wait "$hk_pid" 2> /dev/null
+set -e
+test ! -e "$tmpd/touched"
+echo "OK"

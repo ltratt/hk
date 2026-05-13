@@ -217,8 +217,7 @@ int main(int argc, char** argv) {
     while (true) {
         XEvent ev;
         XNextEvent(dpy, &ev);
-        // FIXME: Do we need to check that we get the KeyPress event we expected?
-        if (ev.type == KeyPress)
+        if (ev.type == KeyPress && ev.xkey.keycode == keycode && (ev.xkey.state & ~ignore_mask) == mask)
             break;
     }
 
