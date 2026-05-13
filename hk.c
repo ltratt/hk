@@ -129,6 +129,8 @@ bool parse_key(Display *dpy, char *s, size_t len, KeyCode *keycode) {
         if (*keycode != NO_KEYCODE)
             errx(EXIT_FAILURE, "Repeated key '%.*s'", (int) len, s);
         *keycode = XKeysymToKeycode(dpy, ks);
+        if (*keycode == 0)
+            errx(EXIT_FAILURE, "No keycode for symbol '%.*s'", (int) len, s);
         return true;
     }
     return false;
