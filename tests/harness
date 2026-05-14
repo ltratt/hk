@@ -97,10 +97,11 @@ echo "OK"
 printf "===> invalid keycode... "
 # This is a bit fragile: the user _might_ have a keyboard with F35!
 set +e
-out=$(./hk F35 true 2>1)
+out=$(./hk F35 true 2>&1)
 rtn=$?
-set +x
+set -e
 if [ "$rtn" -eq 0 ]; then
   exit 1
 fi
+echo $out | grep "No keycode for symbol 'F35'" 2>&1 >/dev/null
 echo "OK"
