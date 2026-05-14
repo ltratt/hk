@@ -36,5 +36,7 @@ distrib:
 	${MAKE} distclean
 	autoconf
 	@read v?'hk version: '; mkdir hk-$$v; \
-	    cp `ls | grep -E -v "(autom4te.cache)|(hk-$$v)"` hk-$$v; \
+	    git archive HEAD | tar -xf - -C hk-$$v; \
+	    rm -rf hk-$$v/.gitignore hk-$$v/.github/; \
+	    cp -p configure hk-$$v/configure; \
 	    tar cfz hk-$$v.tgz hk-$$v; rm -rf hk-$$v
