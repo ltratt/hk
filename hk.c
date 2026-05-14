@@ -129,6 +129,8 @@ bool parse_key(Display *dpy, char *s, size_t len, KeyCode *keycode) {
         if (*keycode != NO_KEYCODE)
             errx(EXIT_FAILURE, "Repeated key '%.*s'", (int) len, s);
         *keycode = XKeysymToKeycode(dpy, ks);
+        if (*keycode == 0)
+            errx(EXIT_FAILURE, "No keycode for symbol '%.*s'", (int) len, s);
         return true;
     }
     return false;
@@ -217,8 +219,7 @@ int main(int argc, char** argv) {
     while (true) {
         XEvent ev;
         XNextEvent(dpy, &ev);
-        // FIXME: Do we need to check that we get the KeyPress event we expected?
-        if (ev.type == KeyPress)
+        if (ev.type == KeyPress && ev.xkey.keycode == keycode && (ev.xkey.state & ~ignore_mask) == mask)
             break;
     }
 
