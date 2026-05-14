@@ -1,3 +1,11 @@
+# 0.3.3 (2026-05-14)
+
+* Add a test suite.
+
+* Ensure that the keys pressed match those requested. This is, at least,
+  necessary under Xvfb, but may also be necessary in other situations.
+
+
 # 0.3.2 (2023-12-27)
 
 * Change linking order of `libX11` to resolve "missing symbol" problems on some
